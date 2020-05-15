@@ -548,6 +548,18 @@ class WebViewController {
     return _webViewPlatformController.loadUrl(url, headers);
   }
 
+  /// Loads the specified HTML text.
+  ///
+  /// `html` must not be null.
+  ///
+  Future<void> loadHtml(
+      String html, {
+      String baseUrl,
+  }) async {
+    assert(html != null);
+    return _webViewPlatformController.loadHtml(html, baseUrl);
+  }
+
   /// Accessor to the current URL that the WebView is displaying.
   ///
   /// If [WebView.initialUrl] was never specified, returns `null`.
