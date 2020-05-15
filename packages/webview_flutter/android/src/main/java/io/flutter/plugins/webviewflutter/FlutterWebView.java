@@ -49,7 +49,7 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     // Allow local storage.
     webView.getSettings().setDomStorageEnabled(true);
     webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-    webView.getSettings().setSupportZoom(true);
+//    webView.getSettings().setSupportZoom(true);
 
     methodChannel = new MethodChannel(messenger, "plugins.flutter.io/webview_" + id);
     methodChannel.setMethodCallHandler(this);
@@ -123,6 +123,9 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       case "loadUrl":
         loadUrl(methodCall, result);
         break;
+      case "loadHtml":
+        loadHtml(methodCall, result);
+        break;
       case "updateSettings":
         updateSettings(methodCall, result);
         break;
@@ -185,6 +188,17 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
       headers = Collections.emptyMap();
     }
     webView.loadUrl(url, headers);
+    result.success(null);
+  }
+
+  private void loadHtml(MethodCall methodCall, Result result) {
+    Map<String, Object> request = (Map<String, Object>) methodCall.arguments;
+    String html = (String) request.get("html");
+    String baseUrl = (String) request.get("baseUrl");
+    if (baseUrl == null) {
+      baseUrl = "about:blank";
+    }
+    webView.loadDataWithBaseURL(baseUrl, html, "text/html", "utf-8", "");
     result.success(null);
   }
 

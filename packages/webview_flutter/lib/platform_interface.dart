@@ -175,6 +175,15 @@ abstract class WebViewPlatformController {
         "WebView loadUrl is not implemented on the current platform");
   }
 
+  /// Loads the specified HTML text
+  ///
+  /// `html` must not be null.
+  ///
+  Future<void> loadHtml(String html, String baseUrl) {
+    throw UnimplementedError(
+        "WebView loadUrl is not implemented on the current platform");
+  }
+
   /// Updates the webview settings.
   ///
   /// Any non null field in `settings` will be set as the new setting value.
