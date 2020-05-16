@@ -129,6 +129,8 @@
     [self onUpdateSettings:call result:result];
   } else if ([[call method] isEqualToString:@"loadUrl"]) {
     [self onLoadUrl:call result:result];
+  } else if ([[call method] isEqualToString:@"loadHtml"]) {
+    [self onLoadHtml:call result:result];
   } else if ([[call method] isEqualToString:@"canGoBack"]) {
     [self onCanGoBack:call result:result];
   } else if ([[call method] isEqualToString:@"canGoForward"]) {
@@ -182,6 +184,26 @@
   } else {
     result(nil);
   }
+}
+
+- (void)onLoadHtml:(FlutterMethodCall*)call result:(FlutterResult)result {
+    NSDictionary<NSString*, id>* arguments = [call arguments];
+    NSString* html = arguments[@"url"];
+    NSString* baseUrl = arguments[@"baseUrl"];
+    NSURL* baseURL;
+    if (baseUrl) {
+        baseURL = [NSURL URLWithString:baseUrl];
+    } else {
+        baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] bundlePath]];
+    }
+    if (![self loadHtml:html withBaseUrl:baseURL]) {
+        result([FlutterError
+                errorWithCode:@"loadHtml_failed"
+                message:@"Failed parsing the HTML"
+                details:[NSString stringWithFormat:@"Request was: '%@'", [call arguments]]]);
+    } else {
+        result(nil);
+    }
 }
 
 - (void)onCanGoBack:(FlutterMethodCall*)call result:(FlutterResult)result {
@@ -411,6 +433,14 @@
   [request setAllHTTPHeaderFields:headers];
   [_webView loadRequest:request];
   return true;
+}
+
+- (bool)loadHtml:(NSString*)html withBaseUrl:(NSURL*)baseUrl {
+    if (!html) {
+        return false;
+    }
+    [_webView loadHTMLString:html baseURL:baseUrl];
+    return true;
 }
 
 - (void)registerJavaScriptChannels:(NSSet*)channelNames
