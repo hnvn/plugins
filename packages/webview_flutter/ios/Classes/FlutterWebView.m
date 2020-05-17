@@ -188,10 +188,10 @@
 
 - (void)onLoadHtml:(FlutterMethodCall*)call result:(FlutterResult)result {
     NSDictionary<NSString*, id>* arguments = [call arguments];
-    NSString* html = arguments[@"url"];
+    NSString* html = arguments[@"html"];
     NSString* baseUrl = arguments[@"baseUrl"];
     NSURL* baseURL;
-    if (baseUrl) {
+    if ([baseUrl isKindOfClass:[NSString class]]) {
         baseURL = [NSURL URLWithString:baseUrl];
     } else {
         baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] bundlePath]];
